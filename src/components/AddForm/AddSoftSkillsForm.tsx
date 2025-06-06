@@ -2,7 +2,7 @@
 import React, { useState, useEffect, type ChangeEvent, type FormEvent, useRef } from 'react';
 import { type Skill, addSoftSkills, fetchMasterSoftSkills, skillLevels } from '../../services/SkillsService';
 import Swal from 'sweetalert2';
-import { Save, X, PlusCircle, Brain } from 'lucide-react';
+import { Save, X, PlusCircle, Brain, Sparkles, Star } from 'lucide-react';
 
 interface AddSoftSkillsFormProps {
   onClose: () => void;
@@ -21,7 +21,6 @@ const AddSoftSkillsForm: React.FC<AddSoftSkillsFormProps> = ({ onClose, onAddSuc
   const [searchTerms, setSearchTerms] = useState<string[]>(['']);
   const [showDropdowns, setShowDropdowns] = useState<boolean[]>([false]);
   const dropdownRefs = useRef<(HTMLDivElement | null)[]>([]);
-
 
   const [isLoadingMasterSkills, setIsLoadingMasterSkills] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -56,7 +55,6 @@ const AddSoftSkillsForm: React.FC<AddSoftSkillsFormProps> = ({ onClose, onAddSuc
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
 
   const handleSkillNameChange = (index: number, value: string) => {
     const updatedSkills = [...skillsToAdd];
@@ -180,87 +178,190 @@ const AddSoftSkillsForm: React.FC<AddSoftSkillsFormProps> = ({ onClose, onAddSuc
   }
 
   return (
-    <div className="fixed inset-0  bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-[100] p-4">
-      <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-lg max-h-[95vh] flex flex-col">
-        <div className="flex justify-between items-center mb-6 border-b pb-4">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 flex items-center"><Brain size={24} className="mr-2 text-purple-600" /> Tambah Soft Skill</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100">
-            <X size={24} />
+    <div className="fixed inset-0  bg-opacity-40 backdrop-blur-md flex justify-center items-center z-[100] p-4">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-r from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-r from-pink-400/20 to-purple-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-full blur-2xl animate-pulse delay-500"></div>
+      </div>
+
+      <div className="relative bg-white/95 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-2xl border border-white/20 w-full max-w-lg max-h-[95vh] flex flex-col animate-scale-in">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8 pb-6 border-b border-gradient-to-r from-purple-200/50 to-pink-200/50">
+          <div className="flex items-center">
+            <div className="p-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-600 mr-4 shadow-lg">
+              <Brain size={24} className="text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center">
+                Tambah Soft Skill
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">Tingkatkan profil keterampilan Anda</p>
+            </div>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="group p-2 rounded-xl text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-all duration-300 hover:scale-110"
+          >
+            <X size={24} className="group-hover:rotate-90 transition-transform duration-300" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-grow overflow-y-auto pr-2 custom-scrollbar-modal space-y-4">
+        {/* Form Content */}
+        <form onSubmit={handleSubmit} className="flex-grow overflow-y-auto pr-2 space-y-6">
           {skillsToAdd.map((skill, index) => (
-            <div key={index} className="p-3 border border-gray-200 rounded-lg space-y-3 bg-gray-50/50" ref={el => dropdownRefs.current[index] = el}>
+            <div 
+              key={index} 
+              className="group p-5 bg-gradient-to-r from-purple-50/80 to-pink-50/80 backdrop-blur-sm border border-purple-200/50 rounded-2xl space-y-4 hover:shadow-lg hover:border-purple-300/60 transition-all duration-300 animate-fade-in-up" 
+              style={{ animationDelay: `${index * 100}ms` }}
+              ref={el => dropdownRefs.current[index] = el}
+            >
+              {/* Skill Name Input */}
               <div className="relative">
-                <label htmlFor={`softskill-name-${index}`} className="block text-xs font-medium text-gray-700 mb-1">Nama Soft Skill</label>
-                <input
-                  type="text"
-                  id={`softskill-name-${index}`}
-                  value={searchTerms[index]}
-                  onChange={(e) => handleSkillNameChange(index, e.target.value)}
-                  onFocus={() => setShowDropdowns(prev => prev.map((s, i) => i === index ? true : s))}
-                  placeholder="Ketik atau pilih soft skill"
-                  className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                  disabled={isSaving || isLoadingMasterSkills}
-                  autoComplete="off"
-                />
-                {showDropdowns[index] && (
+                <label htmlFor={`softskill-name-${index}`} className="block text-sm font-semibold text-purple-800 mb-2 flex items-center">
+                  <Sparkles size={14} className="mr-1.5 text-purple-600" />
+                  Nama Soft Skill
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id={`softskill-name-${index}`}
+                    value={searchTerms[index]}
+                    onChange={(e) => handleSkillNameChange(index, e.target.value)}
+                    onFocus={() => setShowDropdowns(prev => prev.map((s, i) => i === index ? true : s))}
+                    placeholder="Ketik atau pilih soft skill"
+                    className="w-full px-4 py-3 text-sm rounded-xl border border-purple-200/60 bg-white/80 backdrop-blur-sm focus:border-purple-400 focus:ring-2 focus:ring-purple-200/50 transition-all duration-300 placeholder-gray-400"
+                    disabled={isSaving || isLoadingMasterSkills}
+                    autoComplete="off"
+                  />
+                  
+                  {/* Dropdown */}
+                  {showDropdowns[index] && (
                     <>
-                        {isLoadingMasterSkills && <div className="absolute z-20 w-full text-center bg-white border border-gray-300 rounded-md mt-1 p-2 text-sm text-gray-500 shadow-lg">Memuat daftar skill...</div>}
-                        {!isLoadingMasterSkills && getFilteredMasterSkills(index).length > 0 && (
-                          <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto shadow-lg">
-                            {getFilteredMasterSkills(index).map(ms => (
-                              <li 
-                                key={ms.id} 
-                                onClick={() => handleSelectMasterSkill(index, ms.name)}
-                                className="px-3 py-2 text-sm hover:bg-blue-50 cursor-pointer"
-                              >
+                      {isLoadingMasterSkills && (
+                        <div className="absolute z-20 w-full bg-white/95 backdrop-blur-sm border border-purple-200/60 rounded-xl mt-2 p-4 text-sm text-gray-500 shadow-xl animate-fade-in">
+                          <div className="flex items-center justify-center space-x-2">
+                            <div className="w-4 h-4 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"></div>
+                            <span>Memuat daftar skill...</span>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {!isLoadingMasterSkills && getFilteredMasterSkills(index).length > 0 && (
+                        <ul className="absolute z-20 w-full bg-white/95 backdrop-blur-sm border border-purple-200/60 rounded-xl mt-2 max-h-40 overflow-y-auto shadow-xl animate-fade-in">
+                          {getFilteredMasterSkills(index).map(ms => (
+                            <li 
+                              key={ms.id} 
+                              onClick={() => handleSelectMasterSkill(index, ms.name)}
+                              className="px-4 py-3 text-sm hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 cursor-pointer transition-all duration-200 border-b border-purple-100/50 last:border-b-0 first:rounded-t-xl last:rounded-b-xl"
+                            >
+                              <div className="flex items-center">
+                                <Brain size={14} className="mr-2 text-purple-500" />
                                 {ms.name}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                         {!isLoadingMasterSkills && getFilteredMasterSkills(index).length === 0 && searchTerms[index] && (
-                             <div className="absolute z-20 w-full bg-white border border-gray-300 rounded-md mt-1 p-2 text-sm text-gray-500 shadow-lg">
-                                "{searchTerms[index]}" akan ditambahkan sebagai skill baru.
-                            </div>
-                         )}
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      
+                      {!isLoadingMasterSkills && getFilteredMasterSkills(index).length === 0 && searchTerms[index] && (
+                        <div className="absolute z-20 w-full bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/60 rounded-xl mt-2 p-4 text-sm text-green-700 shadow-xl animate-fade-in">
+                          <div className="flex items-center">
+                            <Star size={14} className="mr-2 text-green-600" />
+                            <span>"{searchTerms[index]}" akan ditambahkan sebagai skill baru.</span>
+                          </div>
+                        </div>
+                      )}
                     </>
-                )}
+                  )}
+                </div>
               </div>
+
+              {/* Skill Level Select */}
               <div>
-                <label htmlFor={`softskill-level-${index}`} className="block text-xs font-medium text-gray-700 mb-1">Level Kemahiran</label>
-                <select
-                  id={`softskill-level-${index}`}
-                  value={skill.level}
-                  onChange={(e) => handleSkillLevelChange(index, e.target.value as Skill['level'])}
-                  className="w-full px-3 py-2 text-sm rounded-md border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 appearance-none bg-white"
-                  disabled={isSaving}
-                >
-                  {skillLevels.map(level => <option key={level} value={level}>{level}</option>)}
-                </select>
+                <label htmlFor={`softskill-level-${index}`} className="block text-sm font-semibold text-purple-800 mb-2 flex items-center">
+                  <Star size={14} className="mr-1.5 text-purple-600" />
+                  Level Kemahiran
+                </label>
+                <div className="relative">
+                  <select
+                    id={`softskill-level-${index}`}
+                    value={skill.level}
+                    onChange={(e) => handleSkillLevelChange(index, e.target.value as Skill['level'])}
+                    className="w-full px-4 py-3 text-sm rounded-xl border border-purple-200/60 bg-white/80 backdrop-blur-sm focus:border-purple-400 focus:ring-2 focus:ring-purple-200/50 appearance-none transition-all duration-300 cursor-pointer"
+                    disabled={isSaving}
+                  >
+                    {skillLevels.map(level => (
+                      <option key={level} value={level} className="py-2">{level}</option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
+
+              {/* Remove Skill Button */}
               {skillsToAdd.length > 1 && (
-                <button type="button" onClick={() => removeSkillField(index)} className="text-xs text-red-500 hover:text-red-700">Hapus Skill Ini</button>
+                <button 
+                  type="button" 
+                  onClick={() => removeSkillField(index)} 
+                  className="group flex items-center text-sm text-red-500 hover:text-red-700 transition-all duration-300 hover:scale-105"
+                >
+                  <X size={14} className="mr-1.5 group-hover:rotate-90 transition-transform duration-300" />
+                  Hapus Skill Ini
+                </button>
               )}
             </div>
           ))}
+
+          {/* Add More Skills Button */}
           <button 
             type="button" 
             onClick={addSkillField} 
-            className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center"
+            className="group flex items-center justify-center w-full p-4 bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 border-2 border-dashed border-purple-300/50 hover:border-purple-400/60 rounded-2xl text-purple-600 hover:text-purple-700 transition-all duration-300 hover:scale-105"
             disabled={isSaving}
           >
-            <PlusCircle size={16} className="mr-1" /> Tambah Soft Skill Lain
+            <PlusCircle size={18} className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
+            <span className="font-medium">Tambah Soft Skill Lain</span>
           </button>
         </form>
         
-        <div className="pt-5 border-t mt-auto flex justify-end space-x-3">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition" disabled={isSaving}>Batal</button>
-            <button type="submit" formNoValidate onClick={(e) => { e.preventDefault(); handleSubmit(e as any); }} className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-5 rounded-lg transition flex items-center disabled:opacity-60" disabled={isSaving || isLoadingMasterSkills}>
-              {isSaving ? <><svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Menyimpan...</> : <><Save size={16} className="mr-1.5" />Simpan</>}
-            </button>
+        {/* Footer Actions */}
+        <div className="pt-6 mt-6 border-t border-gradient-to-r from-purple-200/50 to-pink-200/50 flex justify-end space-x-4">
+          <button 
+            type="button" 
+            onClick={onClose} 
+            className="px-6 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all duration-300 hover:scale-105" 
+            disabled={isSaving}
+          >
+            Batal
+          </button>
+          <button 
+            type="submit" 
+            formNoValidate 
+            onClick={(e) => { e.preventDefault(); handleSubmit(e as any); }} 
+            className="group bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white text-sm font-medium py-3 px-6 rounded-xl transition-all duration-300 flex items-center disabled:opacity-60 hover:scale-105 hover:shadow-lg" 
+            disabled={isSaving || isLoadingMasterSkills}
+          >
+            {isSaving ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2.5 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Menyimpan...
+              </>
+            ) : (
+              <>
+                <Save size={16} className="mr-2 group-hover:scale-110 transition-transform duration-300" />
+                Simpan Skill
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>

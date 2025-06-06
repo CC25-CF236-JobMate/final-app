@@ -125,7 +125,7 @@ const Lowongan: React.FC<LowonganProps> = ({ jobs, isLoading, error }) => {
               {/* Gradient Background Overlay */}
               <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isApplied ? 'bg-gradient-to-br from-green-50/40 via-transparent to-emerald-50/30' : 'bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20'}`}></div>
               
-              {/* Top Right Section - Bookmark and Applied Badge */}
+              {/* Top Right Section - Bookmark Only */}
               <div className="absolute top-6 right-6 flex flex-col items-end space-y-3 z-10">
                 {/* Enhanced Bookmark Button */}
                 <button
@@ -139,14 +139,6 @@ const Lowongan: React.FC<LowonganProps> = ({ jobs, isLoading, error }) => {
                     <Bookmark size={20} fill={isBookmarked ? "currentColor" : "none"} className="mx-auto" />
                   }
                 </button>
-
-                {/* Applied Badge - Moved below bookmark */}
-                {isApplied && (
-                  <div className="flex items-center space-x-2 bg-green-100 border border-green-200 text-green-700 px-4 py-2 rounded-2xl text-sm font-semibold shadow-sm">
-                    <CheckCircle size={16} />
-                    <span>Terlamar</span>
-                  </div>
-                )}
               </div>
 
               <div className="relative flex items-start gap-6">
@@ -162,7 +154,7 @@ const Lowongan: React.FC<LowonganProps> = ({ jobs, isLoading, error }) => {
                   <div className="absolute inset-0 rounded-2xl bg-blue-900/20 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700"></div>
                 </div>
 
-                <div className="flex-grow pr-24"> {/* Increased right padding to accommodate the vertical badge layout */}
+                <div className="flex-grow pr-16"> {/* Reduced right padding since no badge */}
                   {/* Job Title */}
                   <h3 className="text-2xl font-bold text-gray-900 leading-tight mb-3 group-hover:text-blue-700 transition-colors duration-300">{job.title}</h3>
                   

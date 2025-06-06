@@ -2,7 +2,7 @@
 import React, { useState, useEffect, type ChangeEvent, type FormEvent } from 'react';
 import { updateProfile, deleteProfilePhoto } from '../../services/ProfileService';
 import Swal from 'sweetalert2';
-import { Camera, Trash2, Save, UserCircle, Phone, MapPin, Linkedin, Github, Instagram, Link as LinkIcon, Info, X } from 'lucide-react';
+import { Camera, Trash2, Save, UserCircle, Phone, MapPin, Linkedin, Github, Instagram, Link as LinkIcon, Info, X, Sparkles, Star } from 'lucide-react';
 
 interface ProfileData {
   fullName?: string;
@@ -39,7 +39,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
     instagram: '',
     portfolioSite: '',
     username: '',
-    status: statusOptions[0], // Default ke opsi pertama
+    status: statusOptions[0],
     photoUrl: null,
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -50,9 +50,9 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
   useEffect(() => {
     if (initialData) {
       setProfile(prev => ({
-        ...prev, // Pertahankan default status jika initialData.status null/undefined
+        ...prev,
         ...initialData,
-        status: initialData.status || statusOptions[0] // Pastikan status memiliki nilai default yang valid
+        status: initialData.status || statusOptions[0]
       }));
       if (initialData.photoUrl) {
         setImagePreview(initialData.photoUrl);
@@ -70,7 +70,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
         Swal.fire('Error', 'Ukuran gambar maksimal 5MB.', 'error');
         return;
       }
@@ -92,7 +92,6 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
     let hasChanges = false;
 
     (Object.keys(profile) as Array<keyof ProfileData>).forEach(key => {
-        // Cek jika field ada di initialData atau jika field baru ditambahkan dan memiliki nilai
         const initialValue = initialData ? initialData[key] : undefined;
         if (profile[key] !== initialValue && key !== 'photoUrl') {
             dataToUpdate[key] = profile[key];
@@ -105,11 +104,10 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
         hasChanges = true;
     }
 
-
     if (!hasChanges) {
       Swal.fire('Info', 'Tidak ada perubahan untuk disimpan.', 'info');
       setIsSaving(false);
-      onClose(); // Tutup modal jika tidak ada perubahan
+      onClose();
       return;
     }
 
@@ -117,17 +115,9 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
       const result = await updateProfile(dataToUpdate);
       Swal.fire('Sukses!', 'Profil berhasil diperbarui.', 'success');
       
-      const finalUpdatedData = { ...initialData, ...profile, ...dataToUpdate }; // Gabungkan initial, profile state, dan data yg diupdate
+      const finalUpdatedData = { ...initialData, ...profile, ...dataToUpdate };
       if (result.photoUrl !== undefined) { 
         finalUpdatedData.photoUrl = result.photoUrl;
-      } else if (dataToUpdate.photoUrl && !result.photoUrl && selectedFile) {
-        // Jika kita kirim base64 (selectedFile ada) tapi backend tidak return URL baru (misalnya error parsial)
-        // Sebaiknya, kita pertahankan imagePreview sebagai photoUrl sementara di UI,
-        // atau idealnya backend selalu konsisten.
-        // Untuk sekarang, kita asumsikan jika upload berhasil, URL dari server akan ada di result.
-        // Jika tidak, photoUrl di `finalUpdatedData` akan dari `dataToUpdate.photoUrl` (base64)
-        // yang mungkin tidak ideal untuk display jangka panjang.
-        // Solusi lebih baik: setelah update, panggil fetchProfile lagi di parent.
       }
       onSaveSuccess(finalUpdatedData);
       onClose();
@@ -185,8 +175,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
       name: 'status', 
       label: 'Status Saat Ini', 
       icon: Info, 
-      type: 'select', // Ubah tipe menjadi select
-      options: statusOptions // Tambahkan opsi dropdown
+      type: 'select',
+      options: statusOptions
     },
     { name: 'linkedin', label: 'LinkedIn URL', placeholder: 'https://linkedin.com/in/username', icon: Linkedin },
     { name: 'github', label: 'GitHub URL', placeholder: 'https://github.com/username', icon: Github },
@@ -196,177 +186,235 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
 
   if (!initialData) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-        <div className="bg-white p-6 rounded-xl shadow-2xl text-center">
-            <svg className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Memuat data form...
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30"></div>
+          <div className="relative bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-2xl text-center border border-white/20">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full"></div>
+            </div>
+            <p className="text-gray-700 font-medium">Memuat data form...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-opacity-70 backdrop-blur-sm flex justify-center items-center z-[100] p-4 ">
-      <div className="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] flex flex-col">
-        <div className="flex justify-between items-center mb-6 border-b pb-4">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Edit Informasi Profil</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100">
-            <X size={24} />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-5 overflow-y-auto pr-2 flex-grow custom-scrollbar">
-          {/* Photo Upload Section */}
-          <div className="mb-6 text-center">
-              <label htmlFor="photoUrlModal" className="block text-sm font-medium text-gray-700 mb-2">Foto Profil</label>
-              <div className="mt-1 flex flex-col items-center">
-                  <div className="w-28 h-28 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-2 border-gray-300 mb-3 relative group">
-                      {imagePreview ? (
-                          <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                      ) : (
-                          <UserCircle className="w-20 h-20 text-gray-400" />
-                      )}
-                      <label 
-                          htmlFor="photoUrlModal" 
-                          className="absolute inset-0 flex items-center justify-center bg-opacity-50 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-full"
-                      >
-                          <Camera size={28} />
-                      </label>
-                  </div>
-                  <input
-                      id="photoUrlModal"
-                      name="photoUrl"
-                      type="file"
-                      accept="image/png, image/jpeg, image/gif"
-                      onChange={handleFileChange}
-                      className="hidden"
-                  />
-                  <div className="flex space-x-2">
-                      <button
-                          type="button"
-                          onClick={() => document.getElementById('photoUrlModal')?.click()}
-                          className="px-3 py-1.5 text-xs bg-blue-900 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center"
-                          disabled={isSaving}
-                      >
-                          <Camera size={14} className="mr-1"/> Ganti
-                      </button>
-                      {(initialData.photoUrl || imagePreview) && (
-                          <button
-                              type="button"
-                              onClick={handleDeletePhotoAndSubmit}
-                              className="px-3 py-1.5 text-xs bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center"
-                              disabled={isSaving}
-                          >
-                             <Trash2 size={14} className="mr-1"/> Hapus
-                          </button>
-                      )}
-                  </div>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-[100] p-4">
+      <div className="relative overflow-hidden w-full max-w-2xl max-h-[95vh]">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30"></div>
+        <div className="absolute top-10 right-10 w-32 h-32 bg-blue-400/5 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-10 left-10 w-40 h-40 bg-purple-400/5 rounded-full blur-2xl"></div>
+        
+        <div className="relative bg-white/90 backdrop-blur-sm p-6 md:p-8 rounded-2xl shadow-2xl border border-white/20 flex flex-col max-h-full">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200/50">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <Sparkles size={20} className="text-white" />
               </div>
+              <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                Edit Informasi Profil
+              </h2>
+            </div>
+            <button 
+              onClick={onClose} 
+              className="group p-2 text-gray-400 hover:text-white bg-white hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-600 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl hover:scale-110"
+            >
+              <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+            </button>
           </div>
 
-          {/* Textual Fields Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
-            {inputFields.map(field => (
-              <div key={field.name} className={field.type === 'textarea' || field.type === 'select' ? 'sm:col-span-2' : ''}>
-                <label htmlFor={`${field.name}Modal`} className="block text-xs font-medium text-gray-700 mb-1 flex items-center">
-                  <field.icon size={14} className="mr-1.5 text-blue-600" />
-                  {field.label}
-                </label>
-                {field.type === 'textarea' ? (
-                  <textarea
-                    id={`${field.name}Modal`}
-                    name={field.name}
-                    rows={3}
-                    value={profile[field.name as keyof ProfileData] as string || ''}
-                    onChange={handleChange}
-                    placeholder={field.placeholder}
-                    className="w-full px-3 py-2 text-sm rounded-md bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-150 ease-in-out shadow-sm"
-                    disabled={isSaving}
-                  />
-                ) : field.type === 'select' ? (
-                  <select
-                    id={`${field.name}Modal`}
-                    name={field.name}
-                    value={profile[field.name as keyof ProfileData] as string || ''}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 text-sm rounded-md bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-150 ease-in-out shadow-sm appearance-none"
+          <form onSubmit={handleSubmit} className="space-y-6 overflow-y-auto pr-2 flex-grow custom-scrollbar">
+            {/* Photo Upload Section */}
+            <div className="text-center">
+              <label className="block text-sm font-semibold text-gray-700 mb-4 flex items-center justify-center">
+                <Camera size={16} className="mr-2 text-blue-600" />
+                Foto Profil
+              </label>
+              <div className="flex flex-col items-center">
+                <div className="relative group mb-4">
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center overflow-hidden border-4 border-white shadow-xl relative">
+                    {imagePreview ? (
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <UserCircle className="w-20 h-20 text-gray-400" />
+                    )}
+                    <label 
+                      htmlFor="photoUrlModal" 
+                      className="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer rounded-full"
+                    >
+                      <Camera size={24} />
+                    </label>
+                  </div>
+                  {/* Decorative ring */}
+                  <div className="absolute inset-0 rounded-full border-2 border-blue-200/50 group-hover:border-blue-300/70 transition-colors duration-300 pointer-events-none"></div>
+                  {/* Status indicator */}
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-2 border-white flex items-center justify-center">
+                    <Star size={12} className="text-white fill-current" />
+                  </div>
+                </div>
+                <input
+                  id="photoUrlModal"
+                  name="photoUrl"
+                  type="file"
+                  accept="image/png, image/jpeg, image/gif"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <div className="flex space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById('photoUrlModal')?.click()}
+                    className="group inline-flex items-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-2 px-4 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-lg hover:shadow-xl hover:scale-105"
                     disabled={isSaving}
                   >
-                    {field.options?.map(option => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
-                ) : (
-                  <input
-                    type={field.type || 'text'}
-                    id={`${field.name}Modal`}
-                    name={field.name}
-                    value={profile[field.name as keyof ProfileData] as string || ''}
-                    onChange={handleChange}
-                    placeholder={field.placeholder}
-                    className="w-full px-3 py-2 text-sm rounded-md bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-150 ease-in-out shadow-sm"
-                    disabled={isSaving}
-                  />
-                )}
+                    <Camera size={14} className="mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                    Ganti Foto
+                  </button>
+                  {(initialData.photoUrl || imagePreview) && (
+                    <button
+                      type="button"
+                      onClick={handleDeletePhotoAndSubmit}
+                      className="group inline-flex items-center bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-medium py-2 px-4 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl hover:scale-105"
+                      disabled={isSaving}
+                    >
+                      <Trash2 size={14} className="mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                      Hapus
+                    </button>
+                  )}
+                </div>
               </div>
-            ))}
-          </div>
-        
-          {error && <p className="text-xs text-red-600 bg-red-100 p-2 rounded-md text-center my-2">{error}</p>}
-        </form>
-        
-        <div className="pt-5 border-t mt-auto flex justify-end space-x-3"> {/* mt-auto untuk mendorong ke bawah */}
+            </div>
+
+            {/* Form Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {inputFields.map(field => (
+                <div key={field.name} className={field.type === 'textarea' || field.type === 'select' ? 'sm:col-span-2' : ''}>
+                  <label htmlFor={`${field.name}Modal`} className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                    <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-blue-500/10 to-purple-500/10 flex items-center justify-center mr-2">
+                      <field.icon size={12} className="text-blue-600" />
+                    </div>
+                    {field.label}
+                  </label>
+                  {field.type === 'textarea' ? (
+                    <textarea
+                      id={`${field.name}Modal`}
+                      name={field.name}
+                      rows={3}
+                      value={profile[field.name as keyof ProfileData] as string || ''}
+                      onChange={handleChange}
+                      placeholder={field.placeholder}
+                      className="w-full px-4 py-3 text-sm rounded-xl bg-gradient-to-r from-gray-50 to-blue-50/30 border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 shadow-sm hover:shadow-md hover:from-blue-50/50 hover:to-purple-50/30"
+                      disabled={isSaving}
+                    />
+                  ) : field.type === 'select' ? (
+                    <select
+                      id={`${field.name}Modal`}
+                      name={field.name}
+                      value={profile[field.name as keyof ProfileData] as string || ''}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 text-sm rounded-xl bg-gradient-to-r from-gray-50 to-blue-50/30 border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 shadow-sm hover:shadow-md hover:from-blue-50/50 hover:to-purple-50/30 appearance-none"
+                      disabled={isSaving}
+                    >
+                      {field.options?.map(option => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={field.type || 'text'}
+                      id={`${field.name}Modal`}
+                      name={field.name}
+                      value={profile[field.name as keyof ProfileData] as string || ''}
+                      onChange={handleChange}
+                      placeholder={field.placeholder}
+                      className="w-full px-4 py-3 text-sm rounded-xl bg-gradient-to-r from-gray-50 to-blue-50/30 border border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 shadow-sm hover:shadow-md hover:from-blue-50/50 hover:to-purple-50/30"
+                      disabled={isSaving}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          
+            {error && (
+              <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-xl p-4">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center mr-3">
+                    <X size={16} className="text-white" />
+                  </div>
+                  <p className="text-sm text-red-700 font-medium">{error}</p>
+                </div>
+              </div>
+            )}
+          </form>
+          
+          {/* Footer */}
+          <div className="pt-6 border-t border-gray-200/50 mt-auto flex justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="group inline-flex items-center bg-white hover:bg-gray-50 text-gray-700 font-medium py-3 px-6 rounded-xl border border-gray-200 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-500/30 shadow-lg hover:shadow-xl hover:scale-105"
               disabled={isSaving}
             >
+              <X size={16} className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
               Batal
             </button>
             <button
-              type="submit" // Mengacu pada form, jadi harus di dalam <form> atau panggil handleSubmit dari sini
-              onClick={() => document.querySelector<HTMLFormElement>('form[class*="space-y-5"]')?.requestSubmit()} // Cara alternatif trigger submit
-              className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-5 rounded-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-60 disabled:cursor-not-allowed shadow-md flex items-center"
+              type="submit"
+              onClick={() => document.querySelector<HTMLFormElement>('form[class*="space-y-6"]')?.requestSubmit()}
+              className="group inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-500/30 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               disabled={isSaving}
             >
               {isSaving ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
                   Menyimpan...
                 </>
               ) : (
                 <>
-                  <Save size={16} className="mr-1.5" />
-                  Simpan
+                  <Save size={16} className="mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                  Simpan Perubahan
                 </>
               )}
             </button>
           </div>
+
+          {/* Decorative footer */}
+          <div className="mt-6 pt-4 border-t border-gray-200/50">
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 text-xs text-gray-500">
+                <div className="w-8 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                <Sparkles size={12} className="text-purple-400" />
+                <span className="font-medium">Profil lengkap meningkatkan peluang karir Anda</span>
+                <Sparkles size={12} className="text-indigo-400" />
+                <div className="w-8 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Custom scrollbar styles */}
+        <style>{`
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);
+            border-radius: 10px;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #cbd5e1, #94a3b8);
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+          }
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #94a3b8, #64748b);
+          }
+        `}</style>
       </div>
-       {/* CSS untuk custom scrollbar jika diperlukan */}
-      <style >{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #c7c7c7;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #a3a3a3;
-        }
-      `}</style>
     </div>
   );
 };

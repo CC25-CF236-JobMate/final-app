@@ -136,7 +136,7 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
                             {/* Gradient Background Overlay */}
                             <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isApplied ? 'bg-gradient-to-br from-green-50/40 via-transparent to-emerald-50/30' : 'bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/20'}`}></div>
                             
-                            {/* Top Right Section - Bookmark and Applied Badge */}
+                            {/* Top Right Section - Bookmark Only */}
                             <div className="absolute top-6 right-6 flex flex-col items-end space-y-3 z-10">
                                 {/* Enhanced Bookmark Button */}
                                 <button
@@ -150,14 +150,6 @@ const LowonganTerbaru: React.FC<Props> = ({ showHeader = true, showButton = true
                                         <Bookmark size={20} fill={isBookmarked ? "currentColor" : "none"} className="mx-auto" />
                                     }
                                 </button>
-
-                                {/* Applied Badge */}
-                                {isApplied && (
-                                    <div className="flex items-center space-x-2 bg-green-100 border border-green-200 text-green-700 px-4 py-2 rounded-2xl text-sm font-semibold shadow-sm">
-                                        <CheckCircle size={16} />
-                                        <span>Terlamar</span>
-                                    </div>
-                                )}
                             </div>
 
                             <div className="relative flex items-start gap-6">
