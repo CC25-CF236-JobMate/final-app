@@ -210,7 +210,7 @@ const EditExperienceForm: React.FC<EditExperienceFormProps> = ({ initialData, on
             </button>
           </div>
       </div>
-      <style jsx global>{`
+      <style >{`
         .custom-scrollbar-modal::-webkit-scrollbar {
           width: 6px;
         }

@@ -201,7 +201,7 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({ onClose, onAddSuc
             </button>
           </div>
       </div>
-      <style jsx global>{`
+      <style >{`
         .custom-scrollbar-modal::-webkit-scrollbar {
           width: 6px;
         }

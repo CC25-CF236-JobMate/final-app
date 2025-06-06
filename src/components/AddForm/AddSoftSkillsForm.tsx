@@ -1,5 +1,5 @@
 // src/components/AddForm/AddSoftSkillsForm.tsx
-import React, { useState, useEffect, ChangeEvent, type FormEvent, useRef } from 'react';
+import React, { useState, useEffect, type ChangeEvent, type FormEvent, useRef } from 'react';
 import { type Skill, addSoftSkills, fetchMasterSoftSkills, skillLevels } from '../../services/SkillsService';
 import Swal from 'sweetalert2';
 import { Save, X, PlusCircle, Brain } from 'lucide-react';

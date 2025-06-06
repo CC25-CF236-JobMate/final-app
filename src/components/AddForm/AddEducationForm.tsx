@@ -188,7 +188,7 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({ onClose, onAddSucce
             </button>
           </div>
       </div>
-      <style jsx global>{`
+      <style >{`
         .custom-scrollbar-modal::-webkit-scrollbar {
           width: 6px;
         }

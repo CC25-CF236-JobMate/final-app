@@ -211,7 +211,7 @@ const EditPortfolioForm: React.FC<EditPortfolioFormProps> = ({ initialData, onCl
             </button>
           </div>
       </div>
-       <style jsx global>{`
+       <style >{`
         .custom-scrollbar-modal::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar-modal::-webkit-scrollbar-track { background: #f9fafb; border-radius: 10px; }
         .custom-scrollbar-modal::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }

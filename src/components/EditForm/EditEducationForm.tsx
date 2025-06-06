@@ -206,7 +206,7 @@ const EditEducationForm: React.FC<EditEducationFormProps> = ({ initialData, onCl
           </div>
       </div>
       {/* Re-use the same global style for modal scrollbar as AddEducationForm if needed */}
-       <style jsx global>{`
+       <style>{`
         .custom-scrollbar-modal::-webkit-scrollbar {
           width: 6px;
         }

@@ -351,7 +351,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
           </div>
       </div>
        {/* CSS untuk custom scrollbar jika diperlukan */}
-      <style jsx global>{`
+      <style >{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
         }
