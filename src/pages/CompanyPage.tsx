@@ -73,15 +73,9 @@ const CompaniesPage: React.FC = () => {
     const totalPages = Math.ceil(companies.length / COMPANIES_PER_PAGE);
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-screen bg-blue-50 flex flex-col">
             <Navbar />
             <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-                <div className="text-center mb-10">
-                    <h1 className="text-4xl md:text-5xl font-bold text-gray-800 flex items-center justify-center gap-3">
-                        <Building size={40} /> Daftar Perusahaan
-                    </h1>
-                    <p className="mt-4 text-lg text-gray-600">Jelajahi perusahaan-perusahaan yang bekerja sama dengan kami.</p>
-                </div>
 
                 <CompanySearch onSearch={handleSearch} isLoading={isLoading} />
 

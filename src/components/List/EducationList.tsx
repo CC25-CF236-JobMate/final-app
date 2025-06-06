@@ -1,7 +1,7 @@
 // src/components/list/EducationList.tsx
 import React from 'react';
 import { type EducationData } from '../../services/EducationService';
-import { Briefcase, BookOpen, Calendar, TrendingUp, Edit3, Trash2, PlusCircle } from 'lucide-react';
+import { School, Building2, Calendar, TrendingUp, Edit3, Trash2, PlusCircle, BookOpen } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 interface EducationListProps {
@@ -13,50 +13,62 @@ interface EducationListProps {
   onDeleteClick: (id: string) => void;
 }
 
+// Sub-komponen untuk setiap item dalam daftar pendidikan
 const EducationListItem: React.FC<{ education: EducationData; onEdit: () => void; onDelete: () => void; }> = ({ education, onEdit, onDelete }) => {
+  // Fungsi untuk memformat tanggal ke format "Bulan Tahun" dalam Bahasa Indonesia
   const formatDate = (dateString?: string | null | Date) => {
     if (!dateString) return 'Sekarang';
+    // Menangani jika tanggal sudah berupa objek Date
     if (dateString instanceof Date) {
       return dateString.toLocaleDateString('id-ID', { year: 'numeric', month: 'long' });
     }
+    // Menangani format 'YYYY-MM'
     const [year, month] = dateString.split('-');
-    const date = new Date(parseInt(year), parseInt(month) -1);
+    const date = new Date(parseInt(year), parseInt(month) - 1);
     return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long' });
   };
 
   return (
-    <div className="p-4 bg-white hover:bg-gray-50 transition-colors duration-150 rounded-lg border border-gray-200 shadow-sm mb-3">
+    // Menggunakan 'group' untuk mengontrol visibilitas tombol edit/hapus saat hover
+    <div className="relative p-5 bg-white/60 backdrop-blur-sm rounded-xl border border-white/20 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
       <div className="flex justify-between items-start">
-        <div>
-          <h3 className="text-md font-semibold text-blue-700 flex items-center">
-            <Briefcase size={18} className="mr-2 text-blue-500"/> {education.level}
+        <div className="flex-1">
+          <h3 className="text-lg font-bold text-indigo-800 flex items-center">
+            <School size={20} className="mr-3 text-indigo-500 flex-shrink-0"/> {education.level}
           </h3>
-          <p className="text-sm text-gray-700 flex items-center mt-1">
-            <BookOpen size={16} className="mr-2 text-gray-500"/>{education.institution} - {education.major}
+          <p className="text-md text-gray-800 flex items-center mt-2">
+            <Building2 size={16} className="mr-3 text-gray-500 flex-shrink-0"/>{education.institution}
           </p>
-          <p className="text-xs text-gray-500 flex items-center mt-1">
-            <Calendar size={14} className="mr-2"/> {formatDate(education.startDate)} – {education.endDate ? formatDate(education.endDate) : 'Sekarang'}
+          <p className="text-sm text-gray-600 flex items-center mt-1">
+            <BookOpen size={16} className="mr-3 text-gray-500 flex-shrink-0"/>{education.major}
           </p>
-          {education.gpa && (
-            <p className="text-xs text-gray-500 flex items-center mt-1">
-              <TrendingUp size={14} className="mr-2"/> IPK: {education.gpa}
-            </p>
-          )}
+          <div className="flex flex-wrap items-center mt-2 text-sm text-gray-500">
+            <div className="flex items-center mr-4">
+              <Calendar size={14} className="mr-2"/> 
+              <span>{formatDate(education.startDate)} – {education.endDate ? formatDate(education.endDate) : 'Sekarang'}</span>
+            </div>
+            {education.gpa && (
+              <div className="flex items-center">
+                <TrendingUp size={14} className="mr-2 text-green-500"/> IPK: {education.gpa}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="flex space-x-2 flex-shrink-0">
+        {/* Tombol aksi (Edit & Hapus) yang muncul saat hover */}
+        <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button 
             onClick={onEdit} 
-            className="p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded-full transition-colors"
+            className="p-2 text-blue-600 hover:text-blue-800 bg-white/50 hover:bg-blue-100/70 rounded-full transition-colors"
             aria-label="Edit Pendidikan"
           >
-            <Edit3 size={16} />
+            <Edit3 size={18} />
           </button>
           <button 
             onClick={onDelete} 
-            className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-100 rounded-full transition-colors"
+            className="p-2 text-red-500 hover:text-red-700 bg-white/50 hover:bg-red-100/70 rounded-full transition-colors"
             aria-label="Hapus Pendidikan"
           >
-            <Trash2 size={16} />
+            <Trash2 size={18} />
           </button>
         </div>
       </div>
@@ -64,8 +76,10 @@ const EducationListItem: React.FC<{ education: EducationData; onEdit: () => void
   );
 };
 
+// Komponen utama daftar pendidikan
 const EducationList: React.FC<EducationListProps> = ({ educationRecords, isLoading, error, onAddClick, onEditClick, onDeleteClick }) => {
   
+  // Fungsi konfirmasi hapus menggunakan SweetAlert2
   const handleDeleteWithConfirmation = (id: string, institution: string) => {
     Swal.fire({
       title: 'Anda yakin?',
@@ -73,11 +87,11 @@ const EducationList: React.FC<EducationListProps> = ({ educationRecords, isLoadi
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      cancelButtonColor: '#60a5fa', // Warna biru yang lebih lembut
       confirmButtonText: 'Ya, hapus!',
       cancelButtonText: 'Batal',
       customClass: {
-        popup: 'rounded-xl shadow-lg'
+        popup: 'rounded-xl shadow-lg bg-white/90 backdrop-blur-sm',
       }
     }).then((result) => {
       if (result.isConfirmed) {
@@ -86,54 +100,61 @@ const EducationList: React.FC<EducationListProps> = ({ educationRecords, isLoadi
     });
   };
 
+  // Tampilan saat data sedang dimuat (skeleton loader)
   if (isLoading) {
     return (
-      <div className="space-y-3 mt-4 animate-pulse">
+      <div className="space-y-4 mt-4 animate-pulse">
         {[...Array(2)].map((_, i) => (
-          <div key={i} className="p-4 bg-gray-100 rounded-lg border border-gray-200">
-            <div className="h-5 bg-gray-300 rounded w-3/5 mb-2"></div>
-            <div className="h-4 bg-gray-300 rounded w-4/5 mb-1.5"></div>
-            <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+          <div key={i} className="p-5 bg-slate-100/50 rounded-xl">
+            <div className="h-6 bg-slate-300/50 rounded w-3/5 mb-3"></div>
+            <div className="h-4 bg-slate-300/50 rounded w-4/5 mb-2"></div>
+            <div className="h-4 bg-slate-300/50 rounded w-1/2"></div>
           </div>
         ))}
       </div>
     );
   }
 
+  // Tampilan saat terjadi error
   if (error) {
-    return <div className="text-center text-red-500 bg-red-50 p-4 rounded-lg shadow mt-4">Error: {error}</div>;
+    return <div className="text-center text-red-600 bg-red-100/50 border border-red-300 p-4 rounded-lg shadow-md mt-4">Error: {error}</div>;
   }
 
   return (
-    <div className="mt-6">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-gray-700">Riwayat Pendidikan</h2>
-        {/* Tombol Tambah kecil hanya muncul jika ada data pendidikan */}
+    <div className="mt-2">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          Riwayat Pendidikan
+        </h2>
+        {/* Tombol "Tambah" dengan style gradien, hanya muncul jika sudah ada data */}
         {educationRecords.length > 0 && (
           <button
             onClick={onAddClick}
-            className="bg-blue-900 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-sm flex items-center text-sm"
+            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-60 shadow-lg hover:shadow-xl hover:scale-105 flex items-center text-sm"
           >
             <PlusCircle size={18} className="mr-2" />
-            Tambah Pendidikan
+            Tambah
           </button>
         )}
       </div>
 
+      {/* Tampilan saat tidak ada data pendidikan (empty state) */}
       {educationRecords.length === 0 ? (
-        <div className="text-center py-12 px-4 bg-white border border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center min-h-[200px]">
+        <div className="text-center py-16 px-6 bg-gradient-to-br from-blue-50/50 to-purple-50/50 border-2 border-white rounded-2xl shadow-inner flex flex-col items-center justify-center min-h-[250px]">
           <button
             onClick={onAddClick}
-            className="flex flex-col items-center text-blue-600 hover:text-blue-700 transition-colors group"
+            className="flex flex-col items-center text-blue-600 hover:text-purple-600 transition-colors duration-300 group"
             aria-label="Tambah Riwayat Pendidikan Baru"
           >
-            <PlusCircle size={48} className="mb-3 text-blue-500 group-hover:text-blue-600 transition-colors" strokeWidth={1.5} />
-            <span className="font-semibold text-lg">Tambah Pendidikan</span>
-            <span className="text-sm text-gray-500 group-hover:text-gray-600">Mulai tambahkan riwayat pendidikan Anda.</span>
+            <div className="p-4 bg-white/70 rounded-full shadow-lg mb-4 group-hover:scale-110 transition-transform">
+                <PlusCircle size={48} className="text-blue-500 group-hover:text-purple-500 transition-colors" strokeWidth={1.5} />
+            </div>
+            <span className="font-bold text-xl text-gray-700 group-hover:text-purple-700">Tambahkan Pendidikan Pertama Anda</span>
+            <span className="text-md text-gray-500 mt-1">Bagikan perjalanan akademis Anda untuk melengkapi profil.</span>
           </button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {educationRecords.map(edu => (
             <EducationListItem 
               key={edu.id} 

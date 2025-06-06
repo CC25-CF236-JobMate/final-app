@@ -1,14 +1,25 @@
 // src/components/JobDetailComp/JobDetail.tsx
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { fetchJobById, type ApiJob } from '../../services/jobService';
 import { auth } from '../../services/firebase';
 import { addBookmark, removeBookmarkByJobId, getBookmarks } from '../../services/bookmarkService';
 import Swal from 'sweetalert2';
-import { Bookmark } from 'lucide-react';
+import { 
+    Bookmark, 
+    ArrowLeft, 
+    MapPin, 
+    Clock, 
+    Building2, 
+    CircleDollarSign, 
+    Star, 
+    Briefcase,
+    Tag,
+    ExternalLink,
+    ArrowRight 
+} from 'lucide-react';
 import ApplyJobModal from '../Modal/ApplyJob';
 
-// ... (fungsi helper formatPostedDateForDetail dan formatSalary tetap sama)
 const formatPostedDateForDetail = (postedAtSeconds: number): string => {
     const date = new Date(postedAtSeconds * 1000);
     const now = new Date();
@@ -30,10 +41,9 @@ const formatSalary = (salary?: ApiJob['salary']): string => {
     return `${salary.currency || 'IDR'} ${minSalaryInMillions}jt - ${maxSalaryInMillions}jt / bulan`;
 };
 
-
 const JobDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate(); // Hook untuk navigasi
+    const navigate = useNavigate();
     const [job, setJob] = useState<ApiJob | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -104,7 +114,6 @@ const JobDetail: React.FC = () => {
     };
 
     const handleApplySuccess = () => {
-        // Tampilkan notifikasi sukses, lalu arahkan ke halaman pencarian
         Swal.fire({
             title: 'Lamaran Terkirim!',
             text: 'Lamaran Anda telah berhasil dikirim. Semoga berhasil!',
@@ -112,67 +121,250 @@ const JobDetail: React.FC = () => {
             confirmButtonText: 'Luar Biasa!',
             customClass: { popup: 'rounded-xl' }
         }).then(() => {
-            navigate('/jobsearch'); // Arahkan kembali ke halaman pencarian
+            navigate('/jobsearch');
         });
     };
 
-    // ... (render logic for loading, error, !job remains the same)
     if (isLoading) {
-        return <section className="bg-blue-50 min-h-screen px-4 py-12 flex justify-center items-center"><p className="text-gray-700 text-lg animate-pulse">Memuat detail pekerjaan...</p></section>;
-    }
-    if (error) {
-        return <section className="bg-blue-50 min-h-screen px-4 py-12 flex flex-col justify-center items-center text-center"><p className="text-red-600 text-lg mb-4">{error}</p><Link to="/jobsearch" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Kembali ke Pencarian</Link></section>;
-    }
-    if (!job) {
-        return <section className="bg-blue-50 min-h-screen px-4 py-12 flex flex-col justify-center items-center text-center"><p className="text-gray-700 text-lg mb-4">Detail pekerjaan tidak tersedia.</p><Link to="/jobsearch" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">Kembali ke Pencarian</Link></section>;
+        return (
+            <section className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-12 flex justify-center items-center">
+                <div className="text-center bg-white backdrop-blur-sm p-8 rounded-3xl shadow-lg border border-blue-100/50">
+                    <div className="inline-flex items-center space-x-3 mb-4">
+                        <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                        <span className="text-xl font-semibold text-gray-700">Memuat detail pekerjaan...</span>
+                    </div>
+                </div>
+            </section>
+        );
     }
 
+    if (error) {
+        return (
+            <section className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-12 flex flex-col justify-center items-center text-center">
+                <div className="bg-white backdrop-blur-sm p-8 rounded-3xl shadow-lg border border-red-200/50 max-w-md">
+                    <div className="text-red-600 text-lg mb-6 font-semibold">{error}</div>
+                    <Link 
+                        to="/jobsearch" 
+                        className="inline-flex items-center gap-3 bg-blue-900 hover:bg-blue-800 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
+                    >
+                        <ArrowLeft size={18} />
+                        Kembali ke Pencarian
+                    </Link>
+                </div>
+            </section>
+        );
+    }
+
+    if (!job) {
+        return (
+            <section className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-12 flex flex-col justify-center items-center text-center">
+                <div className="bg-white backdrop-blur-sm p-8 rounded-3xl shadow-lg border border-gray-200/50 max-w-md">
+                    <div className="text-gray-700 text-lg mb-6 font-semibold">Detail pekerjaan tidak tersedia.</div>
+                    <Link 
+                        to="/jobsearch" 
+                        className="inline-flex items-center gap-3 bg-blue-900 hover:bg-blue-800 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg"
+                    >
+                        <ArrowLeft size={18} />
+                        Kembali ke Pencarian
+                    </Link>
+                </div>
+            </section>
+        );
+    }
 
     const companyInitial = job.companyName ? job.companyName.charAt(0).toUpperCase() : '?';
 
     return (
         <>
-            <section className="bg-blue-50 min-h-screen px-4 py-12">
-                <div className="max-w-4xl mx-auto bg-white p-4 sm:p-8 rounded-xl shadow-lg">
-                    {/* ... (bagian header dan detail tetap sama) ... */}
-                    <div className="flex justify-between items-center mb-6">
-                        <Link to="/jobsearch" className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1.5 p-2 rounded-md hover:bg-blue-50 transition-colors">
-                            <img src="/backbutton.png" alt="Back" className="w-4 h-4" /> Kembali ke Pencarian
+            <section className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-12">
+                <div className="max-w-5xl mx-auto">
+                    {/* Header dengan navigasi dan bookmark */}
+                    <div className="flex justify-between items-center mb-8">
+                        <Link 
+                            to="/jobsearch" 
+                            className="group inline-flex items-center gap-3 text-blue-600 hover:text-blue-800 bg-white/80 backdrop-blur-sm px-4 py-3 rounded-2xl font-semibold transition-all duration-300 hover:scale-105 shadow-sm border border-blue-100/50"
+                        >
+                            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform duration-200" />
+                            <span>Kembali ke Pencarian</span>
                         </Link>
-                        <button onClick={toggleBookmark} disabled={isTogglingBookmark} className={`border border-gray-300 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-gray-100 flex items-center gap-2 transition-colors disabled:opacity-50 ${isBookmarked ? 'bg-blue-100 border-blue-300 text-blue-700 hover:bg-blue-200' : 'text-gray-700'}`}>
-                            {isBookmarked ? 'Tersimpan' : 'Simpan'}
-                            {isTogglingBookmark ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div> : <Bookmark size={14} fill={isBookmarked ? 'currentColor' : 'none'} />}
+                        
+                        <button 
+                            onClick={toggleBookmark} 
+                            disabled={isTogglingBookmark} 
+                            className={`group w-14 h-14 rounded-2xl transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60 hover:scale-110 shadow-lg ${
+                                isBookmarked 
+                                    ? 'bg-blue-100 text-blue-600 hover:bg-blue-200 shadow-blue-500/20 border border-blue-200' 
+                                    : 'bg-white/80 backdrop-blur-sm text-gray-400 hover:text-blue-500 hover:bg-blue-50 border border-gray-200/50'
+                            }`}
+                        >
+                            {isTogglingBookmark ? 
+                                <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mx-auto"></div> 
+                                : <Bookmark size={20} fill={isBookmarked ? "currentColor" : "none"} className="mx-auto" />
+                            }
                         </button>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-8">
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-blue-600 text-white flex items-center justify-center text-3xl sm:text-4xl font-semibold flex-shrink-0">
-                            {companyInitial}
-                        </div>
-                        <div className="flex-grow">
-                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{job.jobTitle}</h1>
-                            <p className="text-gray-700 font-medium mb-1">{job.companyName || "Nama Perusahaan Tidak Tersedia"}</p>
-                            <div className="text-sm text-gray-500">
-                                📍 {job.city} &nbsp; • &nbsp; ⏰ {job.postedAt ? formatPostedDateForDetail(job.postedAt._seconds) : "Tanggal tidak tersedia"}
+                    {/* Main content card */}
+                    <div className="bg-white backdrop-blur-sm border border-gray-100/50 rounded-3xl overflow-hidden shadow-2xl transition-all duration-500">
+                        {/* Header section */}
+                        <div className="relative p-8 bg-gradient-to-br from-blue-50/30 via-white to-purple-50/20">
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-transparent to-purple-50/30"></div>
+                            
+                            <div className="relative flex flex-col sm:flex-row items-start gap-6">
+                                {/* Company Logo */}
+                                <div className="relative group">
+                                    <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-3xl font-bold shadow-xl shadow-blue-900/25 group-hover:shadow-2xl group-hover:shadow-blue-900/30 transition-all duration-300 group-hover:scale-105">
+                                        <span className="text-white">{companyInitial}</span>
+                                    </div>
+                                    <div className="absolute inset-0 rounded-3xl bg-blue-900/20 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-700"></div>
+                                </div>
+
+                                <div className="flex-grow">
+                                    <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-3">{job.jobTitle}</h1>
+                                    <p className="text-xl text-gray-700 font-semibold mb-4">{job.companyName || "Nama Perusahaan Tidak Tersedia"}</p>
+                                    
+                                    {/* Quick info */}
+                                    <div className="flex flex-wrap items-center gap-6 text-gray-600">
+                                        <div className="flex items-center space-x-2">
+                                            <div className="w-8 h-8 bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
+                                                <MapPin size={14} className="text-gray-600" />
+                                            </div>
+                                            <span className="font-medium">{job.city}</span>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <div className="w-8 h-8 bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl flex items-center justify-center">
+                                                <Clock size={14} className="text-purple-600" />
+                                            </div>
+                                            <span className="font-medium">
+                                                {job.postedAt ? formatPostedDateForDetail(job.postedAt._seconds) : "Tanggal tidak tersedia"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-5 border rounded-lg p-4 sm:p-6 bg-slate-50 mb-8 text-sm">
-                        <div><p className="text-xs text-gray-500 uppercase tracking-wider">Tipe Pekerjaan</p><p className="font-semibold text-gray-800 mt-0.5">{job.jobType || "Tidak disebutkan"}</p></div>
-                        <div><p className="text-xs text-gray-500 uppercase tracking-wider">Kategori</p><p className="font-semibold text-gray-800 mt-0.5">{job.category || "Tidak disebutkan"}</p></div>
-                        <div><p className="text-xs text-gray-500 uppercase tracking-wider">Gaji</p><p className="font-semibold text-gray-800 mt-0.5">{formatSalary(job.salary)}</p></div>
-                        <div><p className="text-xs text-gray-500 uppercase tracking-wider">Lokasi Kota</p><p className="font-semibold text-gray-800 mt-0.5">{job.city || "Tidak disebutkan"}</p></div>
-                    </div>
+                        {/* Job details grid */}
+                        <div className="p-8 border-b border-gray-100">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100/50 rounded-2xl border border-blue-200/30">
+                                    <div className="w-12 h-12 bg-gradient-to-r from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+                                        <Briefcase size={18} className="text-blue-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-blue-600 font-semibold uppercase tracking-wider">Tipe Pekerjaan</p>
+                                        <p className="font-bold text-gray-800 mt-1">{job.jobType || "Tidak disebutkan"}</p>
+                                    </div>
+                                </div>
 
-                    {job.aboutCompany && <div className="mb-8"><h2 className="text-xl font-semibold text-gray-800 mb-3">Tentang Perusahaan</h2><p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{job.aboutCompany}</p></div>}
-                    {job.jobDescription && <div className="mb-8"><h2 className="text-xl font-semibold text-gray-800 mb-3">Deskripsi Pekerjaan</h2><div className="prose prose-sm max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">{job.jobDescription}</div></div>}
-                    {job.skillsRequired && job.skillsRequired.length > 0 && <div className="mb-10"><h2 className="text-xl font-semibold text-gray-800 mb-3">Keahlian yang Dibutuhkan</h2><ul className="flex flex-wrap gap-2">{job.skillsRequired.map((skill, index) => <li key={index} className="bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1 rounded-full">{skill}</li>)}</ul></div>}
-                    
-                    <div className="text-center">
-                        <button onClick={handleApplyClick} className="bg-blue-900 hover:bg-blue-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors w-full sm:w-auto">
-                            Lamar Sekarang
-                        </button>
+                                <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-purple-50 to-purple-100/50 rounded-2xl border border-purple-200/30">
+                                    <div className="w-12 h-12 bg-gradient-to-r from-purple-100 to-purple-200 rounded-xl flex items-center justify-center">
+                                        <Tag size={18} className="text-purple-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-purple-600 font-semibold uppercase tracking-wider">Kategori</p>
+                                        <p className="font-bold text-gray-800 mt-1">{job.category || "Tidak disebutkan"}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-green-50 to-green-100/50 rounded-2xl border border-green-200/30">
+                                    <div className="w-12 h-12 bg-gradient-to-r from-green-100 to-green-200 rounded-xl flex items-center justify-center">
+                                        <CircleDollarSign size={18} className="text-green-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-green-600 font-semibold uppercase tracking-wider">Gaji</p>
+                                        <p className="font-bold text-green-600 mt-1 text-sm">{formatSalary(job.salary)}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center space-x-4 p-4 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-2xl border border-orange-200/30">
+                                    <div className="w-12 h-12 bg-gradient-to-r from-orange-100 to-orange-200 rounded-xl flex items-center justify-center">
+                                        <Building2 size={18} className="text-orange-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-orange-600 font-semibold uppercase tracking-wider">Lokasi</p>
+                                        <p className="font-bold text-gray-800 mt-1">{job.city || "Tidak disebutkan"}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Content sections */}
+                        <div className="p-8 space-y-10">
+                            {/* About Company */}
+                            {job.aboutCompany && (
+                                <div className="relative">
+                                    <div className="flex items-center space-x-3 mb-6">
+                                        <div className="w-10 h-10 bg-gradient-to-r from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+                                            <Building2 size={18} className="text-blue-600" />
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-gray-900">Tentang Perusahaan</h2>
+                                    </div>
+                                    <div className="bg-gradient-to-r from-blue-50/50 to-transparent p-6 rounded-2xl border-l-4 border-blue-500">
+                                        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{job.aboutCompany}</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Job Description */}
+                            {job.jobDescription && (
+                                <div className="relative">
+                                    <div className="flex items-center space-x-3 mb-6">
+                                        <div className="w-10 h-10 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-xl flex items-center justify-center">
+                                            <Briefcase size={18} className="text-indigo-600" />
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-gray-900">Deskripsi Pekerjaan</h2>
+                                    </div>
+                                    <div className="bg-gradient-to-r from-indigo-50/50 to-transparent p-6 rounded-2xl border-l-4 border-indigo-500">
+                                        <div className="prose prose-gray max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap">
+                                            {job.jobDescription}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Skills Required */}
+                            {job.skillsRequired && job.skillsRequired.length > 0 && (
+                                <div className="relative">
+                                    <div className="flex items-center space-x-3 mb-6">
+                                        <div className="w-10 h-10 bg-gradient-to-r from-sky-100 to-sky-200 rounded-xl flex items-center justify-center">
+                                            <Star size={18} className="text-sky-600" />
+                                        </div>
+                                        <h2 className="text-2xl font-bold text-gray-900">Keahlian yang Dibutuhkan</h2>
+                                    </div>
+                                    <div className="flex flex-wrap gap-3">
+                                        {job.skillsRequired.map((skill, index) => (
+                                            <span 
+                                                key={index} 
+                                                className="bg-gradient-to-r from-sky-100 to-sky-200 text-sky-700 font-semibold px-4 py-3 rounded-2xl border border-sky-200/50 transition-all duration-200 hover:scale-105 shadow-sm"
+                                            >
+                                                {skill}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Apply button section */}
+                        <div className="p-8 bg-gradient-to-r from-gray-50/50 to-blue-50/30 border-t border-gray-100">
+                            <div className="text-center">
+                                <button 
+                                    onClick={handleApplyClick} 
+                                    className="group bg-blue-900 hover:bg-blue-800 text-white font-bold px-12 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl inline-flex items-center gap-4 text-lg"
+                                >
+                                    <ExternalLink size={20} className="group-hover:rotate-12 transition-transform duration-200" />
+                                    <span>Lamar Sekarang</span>
+                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-200" />
+                                </button>
+                                <p className="text-sm text-gray-600 mt-4">
+                                    Kirim lamaran Anda dan raih kesempatan untuk bergabung dengan tim yang luar biasa!
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Bottom accent line */}
+                        <div className="h-2 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700"></div>
                     </div>
                 </div>
             </section>
