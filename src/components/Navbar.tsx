@@ -13,9 +13,10 @@ import {
   Mic2, 
   BookOpen, 
   Users,
-  Sparkles, // Icon untuk Rekomendasi
-  Menu, // Icon untuk Hamburger
-  X, // Icon untuk Close
+  Sparkles,
+  Menu,
+  X,
+  Building, // <-- Icon untuk Perusahaan
 } from 'lucide-react';
 import { signOut, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../services/firebase';
@@ -29,7 +30,7 @@ const Navbar: React.FC = () => {
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLayananOpen, setIsLayananOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State untuk menu mobile
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const layananDropdownRef = useRef<HTMLDivElement>(null);
@@ -54,13 +55,14 @@ const Navbar: React.FC = () => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
-  // Tutup menu mobile saat ukuran layar berubah ke desktop
   useEffect(() => {
     const handleResize = () => {
-        if (window.innerWidth >= 768) { // md breakpoint
+        if (window.innerWidth >= 768) {
             setIsMobileMenuOpen(false);
         }
     };
@@ -82,7 +84,7 @@ const Navbar: React.FC = () => {
   };
 
   const handleProtectedLink = (path: string) => {
-    setIsMobileMenuOpen(false); // Selalu tutup menu mobile setelah klik
+    setIsMobileMenuOpen(false);
     if (!isLoggedIn) {
       Swal.fire({
         title: 'Akses Ditolak',
@@ -103,9 +105,10 @@ const Navbar: React.FC = () => {
 
   const NavLinks: React.FC<{isMobile?: boolean}> = ({ isMobile = false }) => (
     <>
-        {/* PERBAIKAN: Menambahkan hover:text-blue-600 transition-colors pada setiap item */}
         <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className={isMobile ? "py-2" : "flex items-center hover:text-blue-600 transition-colors"}>Tentang JobMate</Link>
         <Link to="/jobsearch" onClick={() => setIsMobileMenuOpen(false)} className={isMobile ? "py-2" : "flex items-center hover:text-blue-600 transition-colors"}><Briefcase size={16} className="mr-1 inline-block md:hidden lg:inline-block"/> JobSearch</Link>
+        {/* PENAMBAHAN MENU PERUSAHAAN */}
+        <Link to="/companies" onClick={() => setIsMobileMenuOpen(false)} className={isMobile ? "py-2" : "flex items-center hover:text-blue-600 transition-colors"}><Building size={16} className="mr-1 inline-block md:hidden lg:inline-block"/> Perusahaan</Link>
         <button onClick={() => handleProtectedLink('/rekomendasi')} className={isMobile ? "py-2 text-left" : "flex items-center hover:text-blue-600 transition-colors"}><Sparkles size={16} className="mr-1 inline-block md:hidden lg:inline-block"/> Rekomendasi</button>
         <button onClick={() => handleProtectedLink('/cvreview')} className={isMobile ? "py-2 text-left" : "flex items-center hover:text-blue-600 transition-colors"}><FileSearch size={16} className="mr-1 inline-block md:hidden lg:inline-block"/> CV Review</button>
         
@@ -147,13 +150,10 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
-        {/* PERBAIKAN: Menghapus hover:[&>*]:text-blue-600 dari sini */}
         <nav className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center space-x-6 text-gray-700 font-medium text-sm">
             <NavLinks />
         </nav>
 
-        {/* Right Section: Desktop Buttons */}
         <div className="hidden md:flex items-center space-x-4">
           {isLoggedIn && currentUser ? (
             <>
@@ -183,7 +183,6 @@ const Navbar: React.FC = () => {
           )}
         </div>
 
-        {/* Mobile Hamburger Button */}
         <div className="md:hidden">
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 rounded-md text-gray-700 hover:bg-gray-100">
                 {isMobileMenuOpen ? <X size={24}/> : <Menu size={24} />}
@@ -191,7 +190,6 @@ const Navbar: React.FC = () => {
         </div>
       </div>
       
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
           <div className="md:hidden bg-white shadow-lg absolute top-full left-0 w-full z-40">
              <div className="flex flex-col px-6 py-4 space-y-2 text-gray-700 font-medium">

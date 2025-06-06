@@ -20,6 +20,8 @@ import RecommendPage from './pages/RecommendPage';
 
 import { auth } from './services/firebase'; 
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
+import CompaniesPage from './pages/CompanyPage';
+import CompanyDetailPage from './pages/CompanyDetailPages';
 
 interface ProtectedRouteProps {
   isLoggedIn: boolean;
@@ -75,6 +77,8 @@ function App() {
       <Route path="/login" element={isLoggedIn ? <Navigate to="/" replace /> : <LoginPage />} />
       <Route path="/signup" element={isLoggedIn ? <Navigate to="/" replace /> : <SignUpPage />} />
       <Route path="/" element={<HomePage />} /> 
+      <Route path="/companies" element={<CompaniesPage />} />
+      <Route path="/companies/:id" element={<CompanyDetailPage />} />
       <Route path="/jobsearch" element={<JobSearchPage />} />
       <Route path="/jobdetail/:id" element={<JobDetailPage />} />
 

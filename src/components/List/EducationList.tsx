@@ -112,7 +112,7 @@ const EducationList: React.FC<EducationListProps> = ({ educationRecords, isLoadi
         {educationRecords.length > 0 && (
           <button
             onClick={onAddClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-sm flex items-center text-sm"
+            className="bg-blue-900 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-sm flex items-center text-sm"
           >
             <PlusCircle size={18} className="mr-2" />
             Tambah Pendidikan

@@ -1,7 +1,7 @@
 // src/components/list/PortfolioList.tsx
 import React from 'react';
 import { type PortfolioProject } from '../../services/PortfolioService';
-import { Layers, Edit3, Trash2, PlusCircle, Tag, ExternalLink, Info } from 'lucide-react';
+import { Layers, Edit3, Trash2, PlusCircle, Tag, ExternalLink } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 interface PortfolioListProps {

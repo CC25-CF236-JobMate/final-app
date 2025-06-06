@@ -91,7 +91,7 @@ const ProfileList: React.FC<ProfileListProps> = ({ profile, isLoading, error, on
         <p className="text-sm">Sepertinya data profil Anda belum ada atau belum dilengkapi.</p>
         <button 
           onClick={onEditClick}
-          className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-md flex items-center mx-auto"
+          className="mt-4 bg-blue-900 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-md flex items-center mx-auto"
         >
           <Edit3 size={16} className="mr-2" />
           Lengkapi Profil Sekarang

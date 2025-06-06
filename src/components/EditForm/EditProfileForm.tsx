@@ -248,7 +248,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ initialData, onClose,
                       <button
                           type="button"
                           onClick={() => document.getElementById('photoUrlModal')?.click()}
-                          className="px-3 py-1.5 text-xs bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center"
+                          className="px-3 py-1.5 text-xs bg-blue-900 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center"
                           disabled={isSaving}
                       >
                           <Camera size={14} className="mr-1"/> Ganti
