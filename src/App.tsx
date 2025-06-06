@@ -17,11 +17,14 @@ import EditProfilePage from './pages/EditProfilePage';
 import BookmarkPage from './pages/BookmarkPage';
 import ApplicationPage from './pages/ApplicationsPage';
 import RecommendPage from './pages/RecommendPage';
+import CompaniesPage from './pages/CompanyPage';
+import CompanyDetailPage from './pages/CompanyDetailPages';
 
 import { auth } from './services/firebase'; 
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
-import CompaniesPage from './pages/CompanyPage';
-import CompanyDetailPage from './pages/CompanyDetailPages';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
 
 interface ProtectedRouteProps {
   isLoggedIn: boolean;
@@ -34,6 +37,31 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isLoggedIn, children })
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
   return children;
+};
+
+// Komponen baru untuk halaman "Coming Soon"
+const ComingSoon: React.FC = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        Swal.fire({
+            title: 'Fitur Segera Hadir!',
+            text: 'Fitur ini sedang dalam tahap pengembangan dan akan segera tersedia untuk Anda. Terima kasih atas kesabaran Anda.',
+            icon: 'info',
+            confirmButtonText: 'Mengerti',
+            customClass: { popup: 'rounded-xl' }
+        }).then(() => {
+            navigate(-1); // Kembali ke halaman sebelumnya
+        });
+    }, [navigate]);
+
+    // Render placeholder sementara alert ditampilkan
+    return (
+        <div className="flex h-screen w-full items-center justify-center bg-gray-100 dark:bg-gray-900">
+            <div className="text-center text-gray-600 dark:text-gray-400">
+                <p>Mengarahkan...</p>
+            </div>
+        </div>
+    );
 };
 
 
@@ -49,7 +77,7 @@ function App() {
       setIsLoadingAuth(false); 
       if (user) {
         const from = location.state?.from?.pathname || '/';
-        if (window.location.pathname === '/login' || window.location.pathname === '/signup') {
+        if (window.location.pathname === '/login') {
           navigate(from, { replace: true });
         }
       }
@@ -75,123 +103,34 @@ function App() {
     <Routes>
       {/* Rute Publik */}
       <Route path="/login" element={isLoggedIn ? <Navigate to="/" replace /> : <LoginPage />} />
-      <Route path="/signup" element={isLoggedIn ? <Navigate to="/" replace /> : <SignUpPage />} />
+      <Route path="/signup" element={isLoggedIn ? <Navigate to="/" /> : <SignUpPage />} />
       <Route path="/" element={<HomePage />} /> 
-      <Route path="/companies" element={<CompaniesPage />} />
-      <Route path="/companies/:id" element={<CompanyDetailPage />} />
       <Route path="/jobsearch" element={<JobSearchPage />} />
       <Route path="/jobdetail/:id" element={<JobDetailPage />} />
-
+      <Route path="/companies" element={<CompaniesPage />} />
+      <Route path="/companies/:id" element={<CompanyDetailPage />} />
+      
       {/* Rute yang Dilindungi */}
-      <Route 
-        path="/rekomendasi"
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <RecommendPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/applications"
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <ApplicationPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/bookmarks"
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <BookmarkPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/profile/edit" 
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <EditProfilePage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/cvreview" 
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <CvReviewPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/resumeanalysis" 
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <ResumeAnalysisPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/pendidikanfill" 
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <FillPendidikanPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/pengalamanfill" 
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <PengalamanFillPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/skillfill" 
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <SkillFillPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/jobpreferfill" 
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <JobPreferPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/jobstatus" 
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <JobSearchStatusPage />
-          </ProtectedRoute>
-        } 
-      />
-      <Route 
-        path="/profile/saved-jobs"
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <Navigate to="/bookmarks" replace />
-          </ProtectedRoute>
-        }
-      />
-      <Route 
-        path="/profile/applied-jobs"
-        element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <Navigate to="/applications" replace />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/services/jobchat" element={<ProtectedRoute isLoggedIn={isLoggedIn}><div className="p-8">Halaman JobChat (Dilindungi)</div></ProtectedRoute>} />
-      <Route path="/services/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><div className="p-8">Halaman AI Interview (Dilindungi)</div></ProtectedRoute>} />
-      <Route path="/services/jobmodul" element={<ProtectedRoute isLoggedIn={isLoggedIn}><div className="p-8">Halaman JobModul (Dilindungi)</div></ProtectedRoute>} />
-      <Route path="/kerjasama" element={<ProtectedRoute isLoggedIn={isLoggedIn}><div className="p-8">Halaman Kerjasama (Dilindungi)</div></ProtectedRoute>} />
-      <Route path="/premium" element={<ProtectedRoute isLoggedIn={isLoggedIn}><div className="p-8">Halaman Premium (Dilindungi)</div></ProtectedRoute>} />
+      <Route path="/rekomendasi" element={<ProtectedRoute isLoggedIn={isLoggedIn}><RecommendPage /></ProtectedRoute>} />
+      <Route path="/applications" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ApplicationPage /></ProtectedRoute>} />
+      <Route path="/bookmarks" element={<ProtectedRoute isLoggedIn={isLoggedIn}><BookmarkPage /></ProtectedRoute>} />
+      <Route path="/profile/edit" element={<ProtectedRoute isLoggedIn={isLoggedIn}><EditProfilePage /></ProtectedRoute>} />
+      <Route path="/cvreview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><CvReviewPage /></ProtectedRoute>} />
+      <Route path="/resumeanalysis" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ResumeAnalysisPage /></ProtectedRoute>} />
+      <Route path="/pendidikanfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><FillPendidikanPage /></ProtectedRoute>} />
+      <Route path="/pengalamanfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><PengalamanFillPage /></ProtectedRoute>} />
+      <Route path="/skillfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><SkillFillPage /></ProtectedRoute>} />
+      <Route path="/jobpreferfill" element={<ProtectedRoute isLoggedIn={isLoggedIn}><JobPreferPage /></ProtectedRoute>} />
+      <Route path="/jobstatus" element={<ProtectedRoute isLoggedIn={isLoggedIn}><JobSearchStatusPage /></ProtectedRoute>} />
+      <Route path="/profile/saved-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/bookmarks" replace /></ProtectedRoute>} />
+      <Route path="/profile/applied-jobs" element={<ProtectedRoute isLoggedIn={isLoggedIn}><Navigate to="/applications" replace /></ProtectedRoute>} />
+
+      {/* PERUBAHAN: Rute ini sekarang menampilkan alert "Coming Soon" */}
+      <Route path="/services/jobchat" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
+      <Route path="/services/ai-interview" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
+      <Route path="/services/jobmodul" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
+      <Route path="/kerjasama" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
+      <Route path="/premium" element={<ProtectedRoute isLoggedIn={isLoggedIn}><ComingSoon /></ProtectedRoute>} />
 
       <Route path="*" element={
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
