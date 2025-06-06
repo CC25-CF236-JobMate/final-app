@@ -16,7 +16,7 @@ import {
   Sparkles,
   Menu,
   X,
-  Building, // <-- Icon untuk Perusahaan
+  Building,
 } from 'lucide-react';
 import { signOut, onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
 import { auth } from '../services/firebase';
@@ -55,9 +55,7 @@ const Navbar: React.FC = () => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -71,16 +69,29 @@ const Navbar: React.FC = () => {
   }, []);
 
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      setIsProfileOpen(false); 
-      setIsMobileMenuOpen(false);
-      navigate('/'); 
-    } catch (error) {
-      console.error("Error logging out: ", error);
-      Swal.fire({ title: 'Error!', text: 'Gagal logout, silakan coba lagi.', icon: 'error' });
-    }
+  const handleLogout = () => {
+    // PENAMBAHAN KONFIRMASI LOGOUT
+    Swal.fire({
+        title: 'Apakah Anda yakin ingin keluar?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Keluar',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+              await signOut(auth);
+              setIsProfileOpen(false); 
+              setIsMobileMenuOpen(false);
+              navigate('/'); 
+            } catch (error) {
+              console.error("Error logging out: ", error);
+              Swal.fire({ title: 'Error!', text: 'Gagal logout, silakan coba lagi.', icon: 'error' });
+            }
+        }
+    });
   };
 
   const handleProtectedLink = (path: string) => {
@@ -107,7 +118,6 @@ const Navbar: React.FC = () => {
     <>
         <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className={isMobile ? "py-2" : "flex items-center hover:text-blue-600 transition-colors"}>Tentang JobMate</Link>
         <Link to="/jobsearch" onClick={() => setIsMobileMenuOpen(false)} className={isMobile ? "py-2" : "flex items-center hover:text-blue-600 transition-colors"}><Briefcase size={16} className="mr-1 inline-block md:hidden lg:inline-block"/> JobSearch</Link>
-        {/* PENAMBAHAN MENU PERUSAHAAN */}
         <Link to="/companies" onClick={() => setIsMobileMenuOpen(false)} className={isMobile ? "py-2" : "flex items-center hover:text-blue-600 transition-colors"}><Building size={16} className="mr-1 inline-block md:hidden lg:inline-block"/> Perusahaan</Link>
         <button onClick={() => handleProtectedLink('/rekomendasi')} className={isMobile ? "py-2 text-left" : "flex items-center hover:text-blue-600 transition-colors"}><Sparkles size={16} className="mr-1 inline-block md:hidden lg:inline-block"/> Rekomendasi</button>
         <button onClick={() => handleProtectedLink('/cvreview')} className={isMobile ? "py-2 text-left" : "flex items-center hover:text-blue-600 transition-colors"}><FileSearch size={16} className="mr-1 inline-block md:hidden lg:inline-block"/> CV Review</button>
