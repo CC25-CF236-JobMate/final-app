@@ -126,7 +126,7 @@ const RecommendPage: React.FC = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-blue-50 flex flex-col">
       <Navbar />
       <main className="flex-grow max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8 w-full">
         <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg">

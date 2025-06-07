@@ -180,8 +180,8 @@ const PortfolioList: React.FC<PortfolioListProps> = ({ portfolioProjects, isLoad
           >
             {/* Button background animation */}
             <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <PlusCircle size={20} className="mr-2 relative z-10 group-hover:rotate-90 transition-transform duration-300" />
-            <span className="relative z-10">Tambah Proyek</span>
+            <PlusCircle size={20} className="lg:mr-2 relative z-10 group-hover:rotate-90 transition-transform duration-300" />
+            <span className="relative z-10 hidden lg:inline">Tambah Proyek</span>
           </button>
         )}
       </div>
@@ -242,7 +242,7 @@ const PortfolioList: React.FC<PortfolioListProps> = ({ portfolioProjects, isLoad
               className="group inline-flex items-center gap-2 text-purple-600 hover:text-purple-800 font-medium py-3 px-6 rounded-2xl bg-purple-50 hover:bg-purple-100 transition-all duration-300 border border-purple-200 hover:border-purple-300"
             >
               <PlusCircle size={18} className="group-hover:rotate-90 transition-transform duration-300" />
-              <span>Tambah Proyek Lainnya</span>
+              <span className="hidden lg:inline">Tambah Proyek Lainnya</span>
             </button>
           </div>
         </div>

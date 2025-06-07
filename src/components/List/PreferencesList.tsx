@@ -182,12 +182,12 @@ const PreferenceList: React.FC<PreferenceListProps> = ({ preferences, isLoading,
         
         <button 
           onClick={onEditClick}
-          className="group relative bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          className="group relative bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white lg:px-6 lg:py-3 px-3 py-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           aria-label="Edit Preferensi"
         >
           <div className="flex items-center">
-            <Edit3 size={18} className="mr-2 group-hover:rotate-12 transition-transform" />
-            <span className="font-medium">Edit</span>
+            <Edit3 size={18} className="lg:mr-2 group-hover:rotate-12 transition-transform" />
+            <span className="font-medium hidden lg:inline">Edit</span>
           </div>
         </button>
       </div>

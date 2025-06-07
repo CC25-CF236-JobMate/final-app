@@ -191,14 +191,14 @@ const EducationList: React.FC<EducationListProps> = ({ educationRecords, isLoadi
           </div>
         </div>
         
-        {/* Add Button - Only show if there are existing records */}
+        {/* Add Button - Responsive design for mobile */}
         {educationRecords.length > 0 && (
           <button
             onClick={onAddClick}
-            className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 shadow-lg hover:shadow-xl hover:scale-105 flex items-center"
+            className="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-semibold py-3 px-6 lg:px-6 rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50 shadow-lg hover:shadow-xl hover:scale-105 flex items-center"
           >
-            <PlusCircle size={20} className="mr-2" />
-            Tambah
+            <PlusCircle size={20} className="lg:mr-2" />
+            <span className="hidden lg:inline">Tambah</span>
           </button>
         )}
       </div>

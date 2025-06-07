@@ -209,10 +209,10 @@ const ExperienceList: React.FC<ExperienceListProps> = ({ experienceRecords, isLo
         {experienceRecords.length > 0 && (
           <button
             onClick={onAddClick}
-            className="group relative bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 transform flex items-center"
+            className="group relative bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 transform flex items-center lg:px-6 px-3"
           >
-            <PlusCircle size={20} className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
-            Tambah Pengalaman
+            <PlusCircle size={20} className="lg:mr-2 group-hover:rotate-90 transition-transform duration-300" />
+            <span className="hidden lg:inline">Tambah Pengalaman</span>
           </button>
         )}
       </div>
@@ -286,10 +286,10 @@ const ExperienceList: React.FC<ExperienceListProps> = ({ experienceRecords, isLo
             </div>
             <button
               onClick={onAddClick}
-              className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center hover:bg-blue-100 px-4 py-2 rounded-xl transition-all duration-300"
+              className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center hover:bg-blue-100 rounded-xl transition-all duration-300 lg:px-4 lg:py-2 px-2 py-2"
             >
-              <PlusCircle size={16} className="mr-1" />
-              Tambah Lagi
+              <PlusCircle size={16} className="lg:mr-1" />
+              <span className="hidden lg:inline">Tambah Lagi</span>
             </button>
           </div>
         </div>

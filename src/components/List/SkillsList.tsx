@@ -142,10 +142,10 @@ const SkillsSection: React.FC<{
         </div>
         <button
           onClick={onAddClick}
-          className={`group flex items-center px-6 py-3 bg-gradient-to-r ${gradientClass} text-white rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105`}
+          className={`group flex items-center bg-gradient-to-r ${gradientClass} text-white rounded-2xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 lg:px-6 lg:py-3 p-3`}
         >
-          <PlusCircle size={18} className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
-          Tambah
+          <PlusCircle size={18} className="lg:mr-2 group-hover:rotate-90 transition-transform duration-300" />
+          <span className="hidden lg:inline">Tambah</span>
         </button>
       </div>
 

@@ -1,7 +1,7 @@
 // src/components/list/DocumentList.tsx
 import React from 'react';
 import { type DocumentData } from '../../services/DocumentService';
-import { FileText as FileIcon, Edit3, Trash2, PlusCircle, Eye, FilePlus, Award, FileCheck, FileX, Calendar, Download, Sparkles } from 'lucide-react';
+import { FileText as FileIcon, Edit3, Trash2, PlusCircle, Eye, FilePlus, Award, FileCheck, FileX, Sparkles } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 interface DocumentListProps {
@@ -44,19 +44,6 @@ const DocumentListItem: React.FC<{ document: DocumentData; onEdit: () => void; o
     }
   };
 
-  const formatDate = (dateString?: string | Date | any) => {
-    if (!dateString) return '-';
-    // Handle Firestore Timestamp object if it's passed directly
-    if (dateString.toDate && typeof dateString.toDate === 'function') {
-      return dateString.toDate().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    }
-    try {
-      return new Date(dateString).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    } catch (e) {
-      return String(dateString); // fallback if not a valid date string
-    }
-  };
-
   return (
     <div className="group relative bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all duration-300 rounded-2xl border border-white/50 shadow-lg hover:shadow-xl mb-4 overflow-hidden">
       {/* Gradient accent line */}
@@ -82,11 +69,6 @@ const DocumentListItem: React.FC<{ document: DocumentData; onEdit: () => void; o
                 <div className="flex items-center gap-1">
                   <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${getTypeColor(document.type)}`}></div>
                   <span className="font-medium">{document.type}</span>
-                </div>
-                
-                <div className="flex items-center gap-1">
-                  <Calendar size={14} className="text-gray-400" />
-                  <span>{formatDate(document.uploadedAt)}</span>
                 </div>
               </div>
             </div>
@@ -209,7 +191,7 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents, isLoading, error
             className="group relative bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2"
           >
             <PlusCircle size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-            <span>Tambah Dokumen</span>
+            <span className="hidden lg:inline">Tambah Dokumen</span>
             
             {/* Subtle glow effect */}
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300 blur-xl"></div>
@@ -274,7 +256,7 @@ const DocumentList: React.FC<DocumentListProps> = ({ documents, isLoading, error
               className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-medium py-3 px-6 rounded-2xl border-2 border-dashed border-green-300 hover:border-green-400 hover:bg-green-50/50 transition-all duration-300 group"
             >
               <PlusCircle size={18} className="group-hover:rotate-90 transition-transform duration-300" />
-              <span>Tambah Dokumen Lainnya</span>
+              <span className="hidden lg:inline">Tambah Dokumen Lainnya</span>
             </button>
           </div>
         </div>
